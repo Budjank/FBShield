@@ -1,12 +1,6 @@
 import requests
 import json
 
-USER_TOKEN = raw_input("Input Token : ") # Fill your fb user token (open https://facebook.com/me, ctrl +u and copy access token
-print "true for active and false for nonactive"
-SHIELD_ENABLE = raw_input("true or false : ") # true for active and false for nonactive
-
-
-
 def get_userid(token):
 	url = "https://graph.facebook.com/me?access_token=%s" % token
 	res = requests.get(url)
@@ -21,4 +15,19 @@ def turn_shield(token, enable = True):
 	res = requests.post(url, data = data, headers = headers)
         print("Result => "+res.text)
 
-turn_shield(USER_TOKEN, SHIELD_ENABLE)
+print "####################"
+print "##### FBShield #####"
+print "####################"
+print ""
+print "[1] Aktifkan (true)"
+print "[2] Nonaktifkan (false)"
+print ""
+a=raw_input("Pilih : ")
+if a == "1" or a == "01":
+    USER_TOKEN=raw_input("Token : ")
+    SHIELD_ENABLE="true"
+    turn_shield(USER_TOKEN, SHIELD_ENABLE)
+elif a == "2" or a == "02":
+    USER_TOKEN=raw_input("Token : ")
+    SHIELD_ENABLE="false"
+    turn_shield(USER_TOKEN, SHIELD_ENABLE)
