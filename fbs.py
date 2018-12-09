@@ -67,7 +67,7 @@ elif nanya == "b":
     up = get.content
     pu = json.loads(up)
     if "session_key" in up:
-        print warna.merah+'Token :'+ warna.hijau + pu["access_token"]
+        print warna.merah+'Token : '+ warna.hijau + pu["access_token"]
         open(user+'-token.txt', 'a').write(pu["access_token"])
         USER_TOKEN=""+pu['access_token']+""
         print """
