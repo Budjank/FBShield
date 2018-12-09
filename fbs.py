@@ -67,7 +67,7 @@ if nanya == "s" or nanya == "S":
         SHIELD_ENABLE="false"
         turn_shield(USER_TOKEN, SHIELD_ENABLE)
 elif nanya == "b" or nanya == "B":
-    print warna.merah+"Username"
+    print warna.merah+"Username/Email"
     usr=raw_input(warna.oren+"---> ")
     print warna.biru+"Password"
     pw=raw_input(warna.oren+"---> ")
