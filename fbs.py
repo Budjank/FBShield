@@ -1,4 +1,6 @@
-import requests, json, os, sys
+import requests, json, os, sys, hashlib
+
+n = []
 
 class warna:
     ungu = '\033[95m'
@@ -28,6 +30,8 @@ def get_userid(token):
     url = "https://graph.facebook.com/me?access_token=%s" % token
     res = requests.get(url)
     info = json.loads(res.text)
+    nick = info['name']
+    n.append(info['name'])
     return info["id"]
 
 def turn_shield(token, enable = True):
@@ -42,8 +46,6 @@ def turn_shield(token, enable = True):
         print warna.biru+"Pelindung Profile Nonaktif"
     else:
         print warna.merah+"Error"
-
-
 
 banner()
 print warna.biru+"""
@@ -67,22 +69,25 @@ if nanya == "s" or nanya == "S":
         SHIELD_ENABLE="false"
         turn_shield(USER_TOKEN, SHIELD_ENABLE)
 elif nanya == "b" or nanya == "B":
-    print warna.merah+"Username/Email"
-    usr=raw_input(warna.oren+"---> ")
-    print warna.biru+"Password"
-    pw=raw_input(warna.oren+"---> ")
-    get = requests.get("https://b-api.facebook.com/method/auth.login?access_token=237759909591655%25257C0f140aabedfb65ac27a739ed1a2263b1&format=json&sdk_version=2&email="+usr+"&locale=en_US&password="+pw+"&sdk=ios&generate_session_cookies=1&sig=3f555f99fb61fcd7aa0c44f58f522ef6")
-    gc = get.content
-    jl = json.loads(gc)
-    if "session_key" in gc:
-        print warna.merah+'Token => '+ warna.hijau + jl["access_token"]
-        open(usr+'-token.txt', 'a').write(jl["access_token"])
-        USER_TOKEN=""+jl['access_token']+""
-        print """
+    print warna.merah+"Username"
+    usr = raw_input(warna.oren+"---> ");
+    print warna.merah+"Password"
+    pwd = raw_input(warna.oren+"---> ");
+    API_SECRET = '62f8ce9f74b12f84c123cc23437a4a32';
+    data = {"api_key":"882a8490361da98702bf97a021ddc14d","credentials_type":"password","email":usr,"format":"JSON", "generate_machine_id":"1","generate_session_cookies":"1","locale":"en_US","method":"auth.login","password":pwd,"return_ssl_resources":"0","v":"1.0"};sig = 'api_key=882a8490361da98702bf97a021ddc14dcredentials_type=passwordemail='+usr+'format=JSONgenerate_machine_id=1generate_session_cookies=1locale=en_USmethod=auth.loginpassword='+pwd+'return_ssl_resources=0v=1.0'+API_SECRET
+    x = hashlib.new('md5')
+    x.update(sig)
+    data.update({'sig':x.hexdigest()})
+    req = requests.get('https://api.facebook.com/restserver.php',params=data)
+    lol = json.loads(req.text)
+    if "session_key" in lol:
+        print warna.merah+"Token => "+warna.hijau+lol['access_token']
+        USER_TOKEN=""+lol['access_token']+""
+        print warna.biru+"""
         [1] Aktifkan
         [2] Nonaktifkan
         """
-        b=raw_input("---> ")
+        b=raw_input(warna.oren+"---> ")
         if b == "1" or b == "01":
             SHIELD_ENABLE="true"
             turn_shield(USER_TOKEN, SHIELD_ENABLE)
