@@ -11,12 +11,12 @@ def banner():
     print warna.merah + """
 \t     ____________     ___________      ___________
 \t    /\    _______\   /\   ____   \    /\   _______\ 
-\t    \ \  \_______/   \ \  \   \   \   \ \  \______/
-\t     \ \  \_________  \ \  \   \   \   \ \  \ 
-\t      \ \   ________\  \ \  \___\   \   \ \  \______
+\t    \ \  \_______/   \ \  \ \ \   \   \ \  \______/
+\t     \ \  \_________  \ \  \ \ \   \   \ \  \ 
+\t      \ \   ________\  \ \  \_\_\   \   \ \  \______
 \t       \ \  \_______/   \ \   ____   \   \ \______  \ 
-\t        \ \  \           \ \  \   \   \   \_______\  \ 
-\t         \ \  \           \ \  \___\   \      _____\  \ 
+\t        \ \  \           \ \  \ \ \   \   \_______\  \ 
+\t         \ \  \           \ \  \_\_\   \      _____\  \ 
 \t          \ \__\           \ \ _________\    /\________\        
 \t           \/__/            \/__________/    \_________/
 
@@ -36,7 +36,12 @@ def turn_shield(token, enable = True):
     headers = {"Content-Type" : "application/x-www-form-urlencoded", "Authorization" : "OAuth %s" % token}
     url = "https://graph.facebook.com/graphql"
     res = requests.post(url, data = data, headers = headers)
-    print("\033[94mDone!!!")
+    if '"is_shielded":true' in res.text:
+        print warna.hijau+"Pelindung Profile Aktif"
+    elif '"is_shielded":false' in res.text:
+        print warna.biru+"Pelindung Profile Nonaktif"
+    else:
+        print warna.merah+"Error"
 
 
 
@@ -46,40 +51,43 @@ Sudah Punya Token?
 s = sudah
 b = belum
 """
-nanya=raw_input("---> ")
-if nanya == "s":
-    USER_TOKEN=raw_input(warna.oren+"Input Token : ")
-    print """
+nanya=raw_input(warna.oren+"---> ")
+if nanya == "s" or nanya == "S":
+    print warna.hijau+"Input Token"
+    USER_TOKEN=raw_input(warna.oren+"---> ")
+    print warna.biru+"""
     [1] Aktifkan
     [2] Nonaktifkan
     """
-    a=raw_input("Pilih : ")
+    a=raw_input(warna.oren+"---> ")
     if a == "1" or a == "01":
         SHIELD_ENABLE="true"
         turn_shield(USER_TOKEN, SHIELD_ENABLE)
     elif a == "2" or a == "02":
         SHIELD_ENABLE="false"
         turn_shield(USER_TOKEN, SHIELD_ENABLE)
-elif nanya == "b":
-    user=raw_input(warna.oren+'Username/Email : ')
-    passw=raw_input(warna.oren+'Password : ')
-    get = requests.get('https://b-api.facebook.com/method/auth.login?access_token=237759909591655%25257C0f140aabedfb65ac27a739ed1a2263b1&format=json&sdk_version=2&email='+user+'&locale=en_US&password='+passw+'&sdk=ios&generate_session_cookies=1&sig=3f555f99fb61fcd7aa0c44f58f522ef6')
-    up = get.content
-    pu = json.loads(up)
-    if "session_key" in up:
-        print warna.merah+'Token : '+ warna.hijau + pu["access_token"]
-        open(user+'-token.txt', 'a').write(pu["access_token"])
-        USER_TOKEN=""+pu['access_token']+""
+elif nanya == "b" or nanya == "B":
+    print warna.merah+"Username"
+    usr=raw_input(warna.oren+"---> ")
+    print warna.biru+"Password"
+    pw=raw_input(warna.oren+"---> ")
+    get = requests.get("https://b-api.facebook.com/method/auth.login?access_token=237759909591655%25257C0f140aabedfb65ac27a739ed1a2263b1&format=json&sdk_version=2&email="+usr+"&locale=en_US&password="+pw+"&sdk=ios&generate_session_cookies=1&sig=3f555f99fb61fcd7aa0c44f58f522ef6")
+    gc = get.content
+    jl = json.loads(gc)
+    if "session_key" in gc:
+        print warna.merah+'Token => '+ warna.hijau + jl["access_token"]
+        open(usr+'-token.txt', 'a').write(jl["access_token"])
+        USER_TOKEN=""+jl['access_token']+""
         print """
         [1] Aktifkan
         [2] Nonaktifkan
         """
         b=raw_input("---> ")
-        if b == "1":
+        if b == "1" or b == "01":
             SHIELD_ENABLE="true"
             turn_shield(USER_TOKEN, SHIELD_ENABLE)
-        elif b == "2":
+        elif b == "2" or b == "02":
             SHIELD_ENABLE="false"
             turn_shield(USER_TOKEN, SHIELD_ENABLE)
     else:
-        print 'maaf username/password salah'
+        print warna.merah+"Gagal Login"
